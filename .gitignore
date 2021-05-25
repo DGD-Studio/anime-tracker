@@ -1,0 +1,12 @@
+# TS complied stuff
+/build
+
+# Package stuffy
+package-lock.json
+yarn.lock
+
+# .env file 
+.env
+
+# node_modules folder
+/node_modules
