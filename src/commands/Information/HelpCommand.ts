@@ -1,15 +1,181 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, MessageEmbedOptions } from 'discord.js';
 import BaseCommand from '../../utils/structures/BaseCommand';
 import DiscordClient from '../../client/client';
 import converter from 'number-to-words';
+import didYouMean from 'didyoumean';
 
 export default class HelpCommand extends BaseCommand {
 	constructor() {
-		super('help', 'Information', [], 'Get information about a command!');
+		super(
+			'help',
+			'Information',
+			[],
+			'Get information about a command!',
+			['anime help', 'anime help <command>'],
+			5
+		);
 	}
 
 	async run(client: DiscordClient, message: Message, args: Array<string>) {
 		if (args[0]) {
+			let command = client.commands.get(args[0]);
+			if (!command) {
+				let cmdArr = [];
+				client.commands.array().forEach((cmd) => {
+					if (!cmdArr.includes(cmd.getName())) {
+						cmdArr.push(cmd.getName());
+					}
+				});
+				let dym = didYouMean(args[0], cmdArr),
+					dymCommand = '';
+				if (dym !== null) {
+					if (typeof dym == 'string') dymCommand = dym;
+					else {
+						if (dym.length !== 0) dymCommand = dym[0];
+					}
+					const msg = await message.channel.send(
+							new MessageEmbed()
+								.setTitle(`Did not find command ${args[0]}!`)
+								.setDescription(
+									`Did you mean \`${dymCommand}\`?`
+								)
+								.setFooter(
+									'React to this message with one of the options within 5 seconds.'
+								)
+								.setColor(client.randomColor())
+						),
+						emojis = ['❌', '✅'];
+					emojis.forEach(async (emoji) => {
+						await msg.react(emoji);
+					});
+					const filter = (reaction, user) =>
+							emojis.includes(reaction.emoji.name) &&
+							user.id === message.author.id,
+						reaction = await msg
+							.awaitReactions(filter, { max: 1, time: 5e3 })
+							.then(
+								(collected) =>
+									collected.first() &&
+									collected.first().emoji.name
+							);
+					setTimeout(() => {
+						if (!reaction)
+							return msg.edit(
+								`*This message is now inactive. Please run the command again.*`
+							);
+					}, 5e3);
+					switch (reaction) {
+						case emojis[0]:
+							msg.reactions
+								.removeAll()
+								.then((mg) => msg.delete({ timeout: 2e3 }));
+							break;
+						case emojis[1]:
+							msg.reactions.removeAll().then((mg) => {
+								const commandName =
+									client.commands.get(dymCommand);
+								let aliases;
+								if (commandName.getAliases().length == 0)
+									aliases =
+										'Aliases are not provided for this command';
+								else
+									aliases = commandName
+										.getAliases()
+										.map((c) => `\`${c}\``)
+										.join(', ');
+								const commandEmbed = new MessageEmbed()
+									.setTitle(
+										`The help menu for the command ${commandName.getName()}`
+									)
+									.setThumbnail(
+										client.user.displayAvatarURL({
+											dynamic: true,
+										})
+									)
+									.setColor(client.randomColor())
+									.addField(
+										'Category',
+										commandName.getCategory()
+									)
+									.addField(
+										'**Description**',
+										commandName.getDescription().length
+											? commandName.getDescription()
+											: 'A description is not provided for this command'
+									)
+									.addField('Aliases', aliases)
+									.addField(
+										'Usage',
+										commandName.getUsage().length
+											? commandName
+													.getUsage()
+													.map((e) => `\`${e}\``)
+													.join(', ')
+											: 'A usage is not provided for this command'
+									)
+									.addField(
+										'Cooldown',
+										commandName.getCooldown()
+											? `${commandName.getCooldown()} seconds`
+											: 'No cooldown for this command'
+									)
+									.setFooter(
+										'[Required Arguments] <Optional Arguments>'
+									);
+								return msg.edit('', commandEmbed);
+							});
+							break;
+					}
+				} else {
+					return message.channel.send(
+						'That command was not found on this bot.'
+					);
+				}
+			} else {
+				let aliases;
+				if (command.getAliases().length == 0)
+					aliases = 'Aliases are not provided for this command';
+				else
+					aliases = command
+						.getAliases()
+						.map((c) => `\`${c}\``)
+						.join(', ');
+				const commandEmbed = new MessageEmbed()
+					.setTitle(
+						`The help menu for the command ${command.getName()}`
+					)
+					.setThumbnail(
+						client.user.displayAvatarURL({
+							dynamic: true,
+						})
+					)
+					.setColor(client.randomColor())
+					.addField('Category', command.getCategory())
+					.addField(
+						'**Description**',
+						command.getDescription().length
+							? command.getDescription()
+							: 'A description is not provided for this command'
+					)
+					.addField('Aliases', aliases)
+					.addField(
+						'Usage',
+						command.getUsage().length
+							? command
+									.getUsage()
+									.map((e) => `\`${e}\``)
+									.join(', ')
+							: 'A usage is not provided for this command'
+					)
+					.addField(
+						'Cooldown',
+						command.getCooldown()
+							? `${command.getCooldown()} seconds`
+							: 'No cooldown for this command'
+					)
+					.setFooter('[Required Arguments] <Optional Arguments>');
+				return message.channel.send(commandEmbed);
+			}
 		} else {
 			let number = 1;
 			const com = {},
@@ -57,7 +223,7 @@ export default class HelpCommand extends BaseCommand {
 			embed.setDescription(arr.join('\n'));
 			const msg = await message.channel.send(embed);
 			emojis.forEach(async (emoji) => {
-				await msg.react(emoji);
+				msg.react(emoji);
 			});
 			const filter = (reaction, user) =>
 					emojis.includes(reaction.emoji.name) &&

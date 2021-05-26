@@ -6,7 +6,9 @@ export default abstract class BaseCommand {
 		private name: string,
 		private category: string,
 		private aliases: Array<string>,
-		private description: string
+		private description: string,
+		private usage: Array<string>,
+		private cooldown: number
 	) {}
 
 	getName(): string {
@@ -19,7 +21,13 @@ export default abstract class BaseCommand {
 		return this.aliases;
 	}
 	getDescription(): string {
-		return this.description
+		return this.description;
+	}
+	getUsage(): Array<string> {
+		return this.usage;
+	}
+	getCooldown(): number {
+		return this.cooldown;
 	}
 
 	abstract run(

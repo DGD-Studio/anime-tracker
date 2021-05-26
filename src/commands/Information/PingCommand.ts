@@ -9,7 +9,9 @@ export default class PingCommand extends BaseCommand {
 			'ping',
 			'Information',
 			['latency'],
-			'Returns the ping from the client to the discord api and database!'
+			'Returns the ping from the client to the discord api and database!',
+			['anime ping'],
+			3
 		);
 	}
 
