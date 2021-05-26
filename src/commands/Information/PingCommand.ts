@@ -5,7 +5,12 @@ import User from '../../models/User';
 
 export default class PingCommand extends BaseCommand {
 	constructor() {
-		super('ping', 'Information', ['latency']);
+		super(
+			'ping',
+			'Information',
+			['latency'],
+			'Returns the ping from the client to the discord api and database!'
+		);
 	}
 
 	async run(client: DiscordClient, message: Message, args: Array<string>, _) {

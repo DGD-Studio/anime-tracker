@@ -16,5 +16,12 @@ export default class ReadyEvent extends BaseEvent {
 			.catch((err) =>
 				client.logger.error('Failed to connect to database!')
 			);
+		client.user.setPresence({
+			activity: {
+				name: `Anime in ${client.guilds.cache.size} servers`,
+				type: 'WATCHING',
+			},
+			status: 'dnd',
+		});
 	}
 }
