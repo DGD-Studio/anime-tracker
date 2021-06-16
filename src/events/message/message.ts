@@ -2,6 +2,7 @@ import BaseEvent from '../../utils/structures/BaseEvent';
 import { Message } from 'discord.js';
 import DiscordClient from '../../client/client';
 import User from '../../models/User';
+import Guild from '../../models/Guild';
 
 export default class MessageEvent extends BaseEvent {
 	constructor() {
@@ -12,7 +13,18 @@ export default class MessageEvent extends BaseEvent {
 		const mentionRegex = RegExp(`^<@!?${client.user.id}>$`),
 			mentionRegexPrefix = RegExp(`^<@!?${client.user.id}> `);
 
-		if (message.author.bot) return;
+		if (message.author.bot || message.channel.type == 'dm') return;
+		let guildData = await Guild.findOne({ id: message.guild.id });
+		if (!guildData) {
+			guildData = await Guild.create({ id: message.guild.id });
+
+			guildData.save().catch((err) => {
+				client.logger.error(err);
+				return message.channel.send(
+					'Error with database, report to dev when.'
+				);
+			});
+		}
 
 		if (message.content.match(mentionRegex))
 			return message.channel.send('', {
@@ -25,7 +37,9 @@ export default class MessageEvent extends BaseEvent {
 
 		const prefix = message.content.match(mentionRegexPrefix)
 			? message.content.match(mentionRegexPrefix)[0]
-			: process.env.DISCORD_BOT_PREFIX;
+			: message.content.match(process.env.DISCORD_BOT_PREFIX)
+			? process.env.DISCORD_BOT_PREFIX
+			: guildData.prefix;
 
 		if (message.content.startsWith(prefix)) {
 			let member = await User.findOne({ id: message.author.id });

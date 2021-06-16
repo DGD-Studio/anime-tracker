@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, MessageEmbedOptions } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import BaseCommand from '../../utils/structures/BaseCommand';
 import DiscordClient from '../../client/client';
 import converter from 'number-to-words';
@@ -229,13 +229,15 @@ export default class HelpCommand extends BaseCommand {
 					emojis.includes(reaction.emoji.name) &&
 					user.id === message.author.id,
 				collector = msg.createReactionCollector(filter, { time: 6e4 });
-			let i = 0;
+			let i = 0,
+				type = 0;
 			collector
 				.on('collect', async (reaction, user) => {
 					reaction.users.remove(user);
 					switch (reaction.emoji.name) {
 						case emojis[0]:
 							collector.emit('end');
+							type = 1;
 							msg.delete({ timeout: 2e3 });
 							break;
 						case emojis[1]:
@@ -260,13 +262,21 @@ export default class HelpCommand extends BaseCommand {
 					}
 				})
 				.on('end', () => {
-					msg.reactions
-						.removeAll()
-						.then(() =>
+					switch (type) {
+						case 1:
+							msg.reactions
+								.removeAll()
+								.then(() =>
+									msg.edit(
+										'*This message is now inactive and cannot be used.*'
+									)
+								);
+							break;
+						default:
 							msg.edit(
 								'*This message is now inactive and cannot be used.*'
-							)
-						);
+							);
+					}
 				});
 		}
 	}
