@@ -8,9 +8,9 @@ export interface Anime {
 }
 export interface IUser extends Document {
 	id: String;
-	watching: Array<Object>;
-	completed: Array<Object>;
-	planToWatch: Array<Object>;
+	watching: Array<Anime>;
+	completed: Array<Anime>;
+	planToWatch: Array<Anime>;
 }
 
 const UserSchema: Schema = new Schema({

@@ -11,6 +11,7 @@ export default class ReadyEvent extends BaseEvent {
 		connect(process.env.MONGO_DB_URL, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
+			useCreateIndex: true,
 		})
 			.then(() => client.logger.info('Connected to database!'))
 			.catch((err) =>

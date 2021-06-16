@@ -14,6 +14,8 @@
 	"author": "RaymondJiang1#6464",
 	"license": "ISC",
 	"dependencies": {
+		"@sentry/node": "^6.7.1",
+		"@sentry/tracing": "^6.7.1",
 		"axios": "^0.21.1",
 		"chalk": "^4.1.1",
 		"didyoumean": "^1.2.1",

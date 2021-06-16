@@ -3,6 +3,7 @@ import { Message } from 'discord.js';
 import DiscordClient from '../../client/client';
 import User from '../../models/User';
 import Guild from '../../models/Guild';
+import Cooldown from '../../models/Cooldown';
 
 export default class MessageEvent extends BaseEvent {
 	constructor() {
@@ -54,13 +55,60 @@ export default class MessageEvent extends BaseEvent {
 					.slice(prefix.length)
 					.trim()
 					.split(/\s+/),
-				command = client.commands.get(cmdName);
+				command =
+					client.commands.get(cmdName) ||
+					client.commands.find(
+						(cmd) =>
+							cmd.getAliases() &&
+							cmd.getAliases().includes(cmdName)
+					);
 			if (command) {
-				try {
-					let flags = parseOptions(cmdArgs).flags;
-					command.run(client, message, cmdArgs, flags);
-				} catch (err) {
-					return message.channel.send(`There was an error: ${err}`);
+				const cd = await Cooldown.findOne({
+						id: message.author.id,
+						command: command.getName(),
+					}),
+					now = Date.now();
+				console.log(cd);
+				if (cd) {
+					if (now > cd.expirationTime) {
+						cd.delete();
+						try {
+							let flags = parseOptions(cmdArgs).flags;
+							command.run(client, message, cmdArgs, flags);
+						} catch (err) {
+							return message.channel.send(
+								`There was an error: ${err}`
+							);
+						}
+					} else {
+						return message.channel.send(
+							`Wait ${((cd.expirationTime - now) / 1e3).toFixed(
+								1
+							)} second(s) please!`
+						);
+					}
+				} else {
+					try {
+						const makeCooldown = await Cooldown.create({
+							id: message.author.id,
+							command: command.getName(),
+							expirationTime:
+								Date.now() + command.getCooldown() * 1e3,
+						});
+						makeCooldown.save();
+						setTimeout(async () => {
+							await Cooldown.findOneAndDelete({
+								id: message.author.id,
+								command: command.getName(),
+							});
+						}, command.getCooldown() * 1e3);
+						const flags = parseOptions(cmdArgs).flags;
+						command.run(client, message, cmdArgs, flags);
+					} catch (err) {
+						return message.channel.send(
+							`There was an error: ${err}`
+						);
+					}
 				}
 			}
 		}
