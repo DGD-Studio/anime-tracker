@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, PermissionString } from 'discord.js';
 import DiscordClient from '../../client/client';
 
 export default abstract class BaseCommand {
@@ -8,7 +8,8 @@ export default abstract class BaseCommand {
 		private aliases: Array<string>,
 		private description: string,
 		private usage: Array<string>,
-		private cooldown: number
+		private cooldown: number,
+		private permissions?: { user?: PermissionString[], bot?: PermissionString[] },
 	) {}
 
 	getName(): string {
