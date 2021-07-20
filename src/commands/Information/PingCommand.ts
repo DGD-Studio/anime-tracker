@@ -48,6 +48,7 @@ export default class PingCommand extends BaseCommand {
 					} ${ping}ms`
 				)
 				.setColor(client.randomColor());
-		return msg.edit('\u2800', { embed });
+
+		return msg.edit('', embed);
 	}
 }
