@@ -30,6 +30,9 @@ export default abstract class BaseCommand {
 	getCooldown(): number {
 		return this.cooldown;
 	}
+	getPermissions(): { user?: PermissionString[]; bot?: PermissionString[] } {
+		return this.permissions
+	}
 
 	abstract run(
 		client: DiscordClient,

@@ -1,5 +1,6 @@
 import BaseEvent from '../../utils/structures/BaseEvent';
-import { Message } from 'discord.js';
+import BaseCommand from '../../utils/structures/BaseCommand';
+import { Message, PermissionString, TextChannel } from 'discord.js';
 import DiscordClient from '../../client/client';
 import User from '../../models/User';
 import Guild from '../../models/Guild';
@@ -55,7 +56,7 @@ export default class MessageEvent extends BaseEvent {
 					.slice(prefix.length)
 					.trim()
 					.split(/\s+/),
-				command =
+				command: BaseCommand =
 					client.commands.get(cmdName) ||
 					client.commands.find(
 						(cmd) =>
@@ -63,12 +64,46 @@ export default class MessageEvent extends BaseEvent {
 							cmd.getAliases().includes(cmdName)
 					);
 			if (command) {
+				if(command.getPermissions())	{
+					const perms = command.getPermissions()
+					if(perms.user && perms.user.length){
+						let missing: PermissionString[] = []
+						perms.user.forEach((perm) => {
+							if(!(message.channel as TextChannel).permissionsFor(message.member).has(perm)) missing.push(perm)
+						})
+
+						if(missing.length && message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")) return message.channel.send({
+							embed: {
+								title: "Missing Permission(s)",
+								color: client.randomColor(),
+								description: `You are missing the following Permission(s):\n${missing.join(", ")}`
+							}
+						}).catch((e) => null)
+						else if(missing.length) return message.channel.send(`You are missing the following Permission(s): ${missing.join(", ")}`)
+					}
+
+					if(perms.bot && perms.bot.length) {
+						let missing: PermissionString[] = []
+						perms.bot.forEach((perm) => {
+							if(!(message.channel as TextChannel).permissionsFor(message.guild.me).has(perm)) missing.push(perm)
+						})
+
+						if(missing.length && !missing.includes("EMBED_LINKS")) return message.channel.send({
+							embed: {
+								title: "Missing Permission(s)",
+								color: client.randomColor(),
+								description: `I am missing the following Permission(s):\n${missing.join(", ")}`
+							}
+						}).catch((e) => null)
+						else if(missing.length) return message.channel.send(`I am missing the following Permission(s): ${missing.join(", ")}`)	
+					}
+				}
+
 				const cd = await Cooldown.findOne({
 						id: message.author.id,
 						command: command.getName(),
 					}),
 					now = Date.now();
-				console.log(cd);
 				if (cd) {
 					if (now > cd.expirationTime) {
 						cd.delete();
