@@ -1,8 +1,7 @@
-import { Client, ClientOptions, Collection, Guild } from 'discord.js';
+import { Client, ClientOptions, Collection } from 'discord.js';
 import BaseEvent from '../utils/structures/BaseEvent';
 import BaseCommand from '../utils/structures/BaseCommand';
 import Logger from '../utils/logger/logger';
-import ms from "ms"
 import { Mongoose } from 'mongoose';
 import colors from '../json/colors.json';
 import axios from 'axios';
@@ -60,29 +59,4 @@ export default class DiscordClient extends Client {
 		);
 		return { titles, images, averageRating, description };
 	}
-	memory(bytes: number, type?: string): number {
-        if (type === "gb")
-            return Math.round((bytes / 1024 / 1024 / 1000) * 10) / 10;
-        else return Math.round((bytes / 1024 / 1024) * 100) / 100;
-    }
-
-    timestamp(ms: number): string {
-        const sec = Math.floor((ms / 1000) % 60);
-        const min = Math.floor((ms / (1000 * 60)) % 60);
-        const hrs = Math.floor((ms / (1000 * 60 * 60)) % 24);
-        const days = Math.floor((ms / (1000 * 60 * 60 * 24)) % 7);
-        const weeks = Math.floor(ms / (1000 * 60 * 60 * 24 * 7));
-
-        return `${weeks ? `${weeks}w ` : ``}${days ? `${days}d ` : ``}${hrs ? `${hrs}h ` : ``
-            }${min ? `${min}m ` : ``}${sec ? `${sec}s` : ``}`;
-    }
-
-    totalUsers(): number {
-        let users: number = 0;
-        this.guilds.cache.map((guild: Guild) => {
-            if (!guild.memberCount) return;
-            else users += guild.memberCount;
-        });
-        return users;
-    }
 }
