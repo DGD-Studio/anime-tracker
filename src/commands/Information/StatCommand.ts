@@ -12,7 +12,10 @@ export default class StatCommand extends BaseCommand {
       ["stats", "botinfo"],
       "Displays Stats about the bot",
       [],
-      5
+      5,
+      {
+        bot: ["EMBED_LINKS"],
+      }
     );
   }
 

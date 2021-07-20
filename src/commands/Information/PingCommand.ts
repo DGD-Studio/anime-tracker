@@ -11,7 +11,8 @@ export default class PingCommand extends BaseCommand {
 			['latency'],
 			'Returns the ping from the client to the discord api and database!',
 			['anime ping'],
-			3
+			3,
+			{ bot: ["EMBED_LINKS"] }
 		);
 	}
 
