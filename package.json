@@ -22,7 +22,7 @@
 		"discord.js": "^13.0.0",
 		"dotenv-safe": "^8.2.0",
 		"moment": "^2.29.1",
-		"mongoose": "^5.12.11",
+		"mongoose": "^6.0.1",
 		"number-to-words": "^1.2.4"
 	},
 	"devDependencies": {
