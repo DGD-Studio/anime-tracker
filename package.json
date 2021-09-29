@@ -31,7 +31,7 @@
 		"@types/node": "^16.0.0",
 		"@types/number-to-words": "^1.2.1",
 		"nodemon": "^2.0.7",
-		"slappey": "^3.0.0",
+		"slappey": "^4.0.0",
 		"ts-node": "^10.0.0",
 		"typescript": "^4.2.4"
 	}
