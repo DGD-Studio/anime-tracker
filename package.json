@@ -16,7 +16,7 @@
 	"dependencies": {
 		"@sentry/node": "^6.7.1",
 		"@sentry/tracing": "^6.7.1",
-		"axios": "^0.21.1",
+		"axios": "^0.22.0",
 		"chalk": "^4.1.1",
 		"didyoumean": "^1.2.1",
 		"discord.js": "^13.0.0",
