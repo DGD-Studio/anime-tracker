@@ -12,7 +12,8 @@ export default class HelpCommand extends BaseCommand {
 			[],
 			'Get information about a command!',
 			['anime help', 'anime help <command>'],
-			5
+			5,
+			{ bot: ["EMBED_LINKS", "ADD_REACTIONS"] }
 		);
 	}
 

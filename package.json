@@ -2,13 +2,14 @@
 	"name": "anime-tracker",
 	"version": "1.0.0",
 	"description": "A discord bot that allows you to track your anime",
-	"main": "index.js",
+	"main": "build/src/bot.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "nodemon --exec ts-node src/bot.ts",
-		"start": "nodemon ./build/bot.js",
+		"start": "nodemon ./build/src/bot.js",
 		"build": "tsc --build",
-		"gen": "slappey"
+		"gen": "slappey",
+		"prod": "node ./build/src/bot.js"
 	},
 	"keywords": [],
 	"author": "RaymondJiang1#6464",
