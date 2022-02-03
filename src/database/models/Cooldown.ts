@@ -1,8 +1,6 @@
-import { Document, model, Schema } from 'mongoose';
-
-export interface ICooldown extends Document {
-	id: String;
-	command: String;
+/** export interface ICooldown extends Document {
+	id: string;
+	command: string;
 	expirationTime: number;
 }
 
@@ -21,4 +19,6 @@ const CooldownSchema: Schema = new Schema({
 	},
 });
 
-export default model<ICooldown>('Cooldowns', CooldownSchema);
+export default model<ICooldown>('Cooldowns', CooldownSchema);*/
+
+
