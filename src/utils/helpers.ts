@@ -17,6 +17,7 @@ export async function updateCommands(
     scope?: "Guild" | "Global",
     deploy?: boolean
 ) {
+    if (!deploy) return;
     const globalCommands: MakeRequired<EditGlobalApplicationCommand, "name">[] = [];
     const perGuildCommands: MakeRequired<EditGlobalApplicationCommand, "name">[] = [];
 

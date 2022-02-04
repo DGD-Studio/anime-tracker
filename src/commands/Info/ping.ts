@@ -1,5 +1,5 @@
 import { ApplicationCommandTypes, InteractionResponseTypes } from "../../../deps.ts";
-import { snowflakeToTimestamp, humanizeMilliseconds } from "../../utils/helpers.ts";
+import { snowflakeToTimestamp } from "../../utils/helpers.ts";
 import { createCommand } from "../mod.ts";
 
 createCommand({
@@ -15,7 +15,7 @@ createCommand({
             {
                 type: InteractionResponseTypes.ChannelMessageWithSource,
                 data: {
-                    content: `${ping}ms (${humanizeMilliseconds(ping)})`,
+                    content: `${ping}ms`,
                 },
             },
         );

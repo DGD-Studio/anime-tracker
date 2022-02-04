@@ -16,5 +16,5 @@ export const MONGO_DB_URL = env.MONGO_DB_URL
 export const DISCORD_BOT_ID = env.DISCORD_BOT_ID ? BigInt(env.DISCORD_BOT_ID) : BigInt(atob(DISCORD_BOT_TOKEN.split(".")[0]))
 
 // THIS IS LAZINESS
-export const DEPLOY = true
+export const DEPLOY = false
 export const SCOPE: "Global" | "Guild" = "Global"

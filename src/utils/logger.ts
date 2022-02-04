@@ -1,8 +1,8 @@
 import { bold, cyan, white, italic, red, yellow } from "../../deps.ts";
 
 export enum Loglevels {
-    Info,
     Debug,
+    Info,
     Warn,
     Error,
     Fatal,
