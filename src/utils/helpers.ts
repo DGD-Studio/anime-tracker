@@ -15,6 +15,7 @@ const log = logger({ name: "Anime Tracker | Helpers" })
 export async function updateCommands(
     bot: BotWithCache,
     scope?: "Guild" | "Global",
+    deploy?: boolean
 ) {
     const globalCommands: MakeRequired<EditGlobalApplicationCommand, "name">[] = [];
     const perGuildCommands: MakeRequired<EditGlobalApplicationCommand, "name">[] = [];

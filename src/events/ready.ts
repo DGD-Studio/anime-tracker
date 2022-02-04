@@ -1,9 +1,6 @@
 import { events } from "./mod.ts"
 import { Bot, editBotStatus, ActivityTypes } from "../../deps.ts"
 import { logger } from "../utils/logger.ts"
-import { updateCommands } from "../utils/helpers.ts"
-import { DEPLOY, SCOPE } from "../../config.ts"
-import { bot } from "../../mod.ts"
 
 const log = logger({ name: "Anime Tracker | Ready Event" })
 
@@ -19,5 +16,4 @@ events.ready = (denobot: Bot, _payload) => {
             }
         ]
     })
-    if (DEPLOY) updateCommands(bot, SCOPE)
 }

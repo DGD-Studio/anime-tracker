@@ -94,7 +94,7 @@ events.interactionCreate = async (rawBot, interaction) => {
                 try {
                     if (command) {
                         command.execute(rawBot, interaction);
-                        log.info(
+                        return log.info(
                             `[Command: ${bgYellow(black(String(interaction.data.name)))} - ${bgBlack(green(`Success`))
                             }] by ${interaction.user.username}#${interaction.user.discriminator} in ${guildName}${guildName !== "Direct Message" ? ` (${guild.id})` : ``
                             }`,
@@ -109,9 +109,10 @@ events.interactionCreate = async (rawBot, interaction) => {
                         }`,
                     );
                     err.length ? log.error(err) : undefined;
+                    return
                 }
             } else {
-                log.warn(
+                return log.warn(
                     `[Command: ${bgYellow(black(String(interaction.data.name)))} - ${bgBlack(yellow(`Not Found`))
                     }] by ${interaction.user.username}#${interaction.user.discriminator} in ${guildName}${guildName !== "Direct Message" ? ` (${guild.id})` : ``
                     }`,

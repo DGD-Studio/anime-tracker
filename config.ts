@@ -17,4 +17,4 @@ export const DISCORD_BOT_ID = env.DISCORD_BOT_ID ? BigInt(env.DISCORD_BOT_ID) : 
 
 // THIS IS LAZINESS
 export const DEPLOY = true
-export const SCOPE: "Global" | "Guild" = "Guild"
+export const SCOPE: "Global" | "Guild" = "Global"
